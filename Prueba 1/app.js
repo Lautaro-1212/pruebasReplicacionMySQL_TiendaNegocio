@@ -1,39 +1,41 @@
-// Import the promise-based version of mysql2
-const mysql = require('mysql2/promise');
+import { pool } from './db.js'
 
-async function initializeTable() {
-  try {
-    // 1. Configure the database connection parameters
-    const connection = await mysql.createConnection({
-      host: 'localhost',
-      port:'3306',
-      user: 'root',     // Replace with your MySQL username
-      password: 'Lauta', // Replace with your MySQL password
-      database: 'Hola'  // Replace with your target database name
-    });
-
-    console.log('Connected to the MySQL server successfully.');
-
-    // 2. Define the SQL query to create the table structure
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        email VARCHAR(150) NOT NULL UNIQUE,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
-
-    // 3. Execute the creation query
-    await connection.query(createTableQuery);
-    console.log('Table "users" was checked/created successfully.');
-
-    // 4. Close the connection stream
-    await connection.end();
-    
-  } catch (error) {
-    console.error('An error occurred:', error.message);
+const insertProducts = async () => {
+  try{
+    const result = await pool.query("INSERT INTO productos(codigo, nombre, precio, stock) " + "VALUES (?, ?, ?, ?)", ["1231", "Pancho", 1231, 1211]);
+    console.table(result)
+    console.log("La tabla se creo exitosamente")
+  } catch(error){
+    console.error(error)
   }
 }
 
-initializeTable();
+const createTableProductos = async () => {
+  try{
+    const [result] = await pool.query(`
+      CREATE TABLE productos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        codigo VARCHAR(50) NOT NULL,
+        nombre VARCHAR(100) NOT NULL,
+        precio DECIMAL(10,2) NOT NULL,
+        stock INT NOT NULL
+      )
+    `);
+
+    console.table(result)
+    console.log("La tabla se creo exitosamente")
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const getProducts = async () => {
+  try{
+    const [result] = await pool.query(`SELECT id, codigo, nombre, precio, stock FROM productos`)
+    console.table(result);
+  } catch(error){
+    console.error(error)
+  }
+}
+
+getProducts();
