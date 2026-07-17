@@ -4,7 +4,7 @@ const insertProducts = async () => {
   try{
     const result = await pool.query("INSERT INTO productos(codigo, nombre, precio, stock) " + "VALUES (?, ?, ?, ?)", ["1231", "Pancho", 1231, 1211]);
     console.table(result)
-    console.log("La tabla se creo exitosamente")
+    console.log("Los productos se insertaron correctamente")
   } catch(error){
     console.error(error)
   }
@@ -38,4 +38,16 @@ const getProducts = async () => {
   }
 }
 
+const emptyTable = async () => {
+  try{
+    const [result] = await pool.query(`DELETE FROM productos`)
+    console.table(result);
+    console.log("La tabla se vacio exitosamente")
+  } catch(error){
+    console.error(error)
+  }
+}
+
+getProducts();
+emptyTable();
 getProducts();
