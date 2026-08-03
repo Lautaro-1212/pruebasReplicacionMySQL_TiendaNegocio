@@ -9,8 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "dependencies": {
-    "mysql2": "^3.23.0",
+    "mysql2": "^3.23.2",
     "nodemon": "^3.1.14"
   }
 }
