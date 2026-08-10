@@ -1,8 +1,8 @@
 import { pool } from '../DBs/wrapper.js'
 
-const insertProducts = async () => {
+const insertProducts = async (producto) => {
   try{
-    const result = await pool.query("INSERT INTO productos(nombre) " + "VALUES (?)", ["Pescado"]);
+    const result = await pool.query("INSERT INTO productos(nombre) " + "VALUES (?)", [producto]);
     console.table(result)
     console.log("Los productos se insertaron correctamente")
   } catch(error){
@@ -48,4 +48,4 @@ const emptyTable = async () => {
   }
 }
 
-getProducts();
+getProducts()
