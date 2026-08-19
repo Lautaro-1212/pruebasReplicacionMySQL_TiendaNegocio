@@ -89,6 +89,9 @@ else
 
 fi
 
+# Guardamos el hostname del nuevo master
+export NEW_MASTER="$NEW_MASTER_HOST"
+
 # ==================================================
 # 3. Promocionar nuevo MASTER
 # ==================================================
@@ -126,9 +129,10 @@ if [ "$NEW_MASTER_CONTAINER" = "$SLAVE1_CONTAINER" ]; then
 
     echo "Configurando slave2 para replicar desde slave1..."
 
-    docker exec -i "$SLAVE2_CONTAINER" \
-        mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" \
-        < "$FAILOVER_DIR/reconfigure-slave.sql"
+    envsubst '${NEW_MASTER}' \
+        < "$FAILOVER_DIR/reconfigure-replica.sql" \
+        | docker exec -i "$SLAVE2_CONTAINER" \
+            mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"
 
     echo "Slave2 ahora replica desde slave1."
 
@@ -141,9 +145,11 @@ elif [ "$NEW_MASTER_CONTAINER" = "$SLAVE2_CONTAINER" ]; then
 
     echo "Configurando slave1 para replicar desde slave2..."
 
-    docker exec -i "$SLAVE1_CONTAINER" \
-        mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" \
-        < "$FAILOVER_DIR/reconfigure-slave.sql"
+    envsubst '${NEW_MASTER}' \
+        < "$FAILOVER_DIR/reconfigure-replica.sql" \
+        | docker exec -i "$SLAVE1_CONTAINER" \
+            mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"
+
 
     echo "Slave1 ahora replica desde slave2."
 
@@ -166,6 +172,28 @@ envsubst '${NEW_MASTER} ${OLD_MASTER}' \
 echo "ProxySQL actualizado."
 
 # ==================================================
+# 6. Reincorporar antiguo MASTER
+# ==================================================
+
+echo "[6/6] Reincorporando antiguo master..."
+
+if check_mysql "$MASTER_CONTAINER"; then
+
+    echo "Antiguo master disponible."
+    echo "Configurándolo para replicar desde $NEW_MASTER_HOST..."
+
+    "$FAILOVER_DIR/rejoin.sh" \
+        "$MASTER_CONTAINER" \
+        "$NEW_MASTER_HOST"
+
+else
+
+    echo "Antiguo master todavía no está disponible."
+    echo "Se reincorporará cuando vuelva a estar disponible."
+
+fi
+
+# ==================================================
 # Fin
 # ==================================================
 
@@ -174,4 +202,3 @@ echo "       FAILOVER COMPLETADO"
 echo "======================================"
 echo "Nuevo master: $NEW_MASTER_HOST"
 echo "======================================"
-
