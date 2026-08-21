@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 # ==================================================
 # Configuración
@@ -125,33 +125,52 @@ echo "Usuario replica configurado."
 # desde slave1.
 # --------------------------------------------------
 
-if [ "$NEW_MASTER_CONTAINER" = "$SLAVE1_CONTAINER" ]; then
+if [ "$NEW_MASTER_CONTAINER" = "$SLAVE2_CONTAINER" ]; then
 
-    echo "Configurando slave2 para replicar desde slave1..."
+    if check_mysql "$SLAVE1_CONTAINER"; then
 
-    envsubst '${NEW_MASTER}' \
-        < "$FAILOVER_DIR/reconfigure-replica.sql" \
-        | docker exec -i "$SLAVE2_CONTAINER" \
-            mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"
+        echo "Configurando slave1 para replicar desde slave2..."
 
-    echo "Slave2 ahora replica desde slave1."
+        envsubst '${NEW_MASTER}' \
+            < "$FAILOVER_DIR/reconfigure-replica.sql" \
+            | docker exec -i "$SLAVE1_CONTAINER" \
+                mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"
+
+        echo "Slave1 ahora replica desde slave2."
+
+    else
+
+        echo "Slave1 no disponible."
+        echo "Se reincorporará posteriormente mediante rejoin."
+
+    fi
+
+fi
 
 # --------------------------------------------------
 # Si slave2 fue promovido, slave1 pasa a replicar
 # desde slave2.
 # --------------------------------------------------
 
-elif [ "$NEW_MASTER_CONTAINER" = "$SLAVE2_CONTAINER" ]; then
+if [ "$NEW_MASTER_CONTAINER" = "$SLAVE1_CONTAINER" ]; then
 
-    echo "Configurando slave1 para replicar desde slave2..."
+    if check_mysql "$SLAVE2_CONTAINER"; then
 
-    envsubst '${NEW_MASTER}' \
-        < "$FAILOVER_DIR/reconfigure-replica.sql" \
-        | docker exec -i "$SLAVE1_CONTAINER" \
-            mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"
+        echo "Configurando slave2 para replicar desde slave1..."
 
+        envsubst '${NEW_MASTER}' \
+            < "$FAILOVER_DIR/reconfigure-replica.sql" \
+            | docker exec -i "$SLAVE2_CONTAINER" \
+                mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD"
 
-    echo "Slave1 ahora replica desde slave2."
+        echo "Slave2 ahora replica desde slave1."
+
+    else
+
+        echo "Slave2 no disponible."
+        echo "Se reincorporará posteriormente mediante rejoin."
+
+    fi
 
 fi
 

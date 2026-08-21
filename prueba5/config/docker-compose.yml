@@ -86,7 +86,7 @@ services:
     restart: always
 
     ports:
-      - "6032:6032"
+      - "6034:6032"
       - "6033:6033"
 
     volumes:
