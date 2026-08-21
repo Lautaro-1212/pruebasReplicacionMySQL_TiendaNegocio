@@ -23,24 +23,38 @@
 
 ## Como probar cada prueba: 
 
-Prueba1: 
-1) Primero levantar la imagen de docker con el servidor MySQL: 
+Prueba1:
+
+1) Ir hacia la carpeta de la prueba1:
+
+```bash
+cd prueba1
+```
+
+2) Primero levantar la imagen de docker con el servidor MySQL: 
 
 ```bash
 docker run -d --name db1 -e MYSQL_ROOT_PASSWORD=Lauta -e MYSQL_DATABASE=Hola -p 3306:3306 mysql:8.0.
 ```
 
-2) Dentro del proyecto instalar ‘mysql2’:
+3) Dentro del proyecto instalar ‘mysql2’:
 
 ```bash
 npm i mysql2
 ```
 
-3) En app.js correr primero la funcion createTableProductos().
+4) Ejecutar app.js con: 
 
-4) Despues hacer un probra las demas funciones.
+```bash
+node app.js
+```
+
+5) Probar los diferentes funciones de app.js reemplazar al final del todo la funcion por otra.
+
+##
 
 Prueba2: 
+
 1) En una terminal ir prueba3/mysql-replicacion y hacer: 
 
 ```bash
@@ -49,7 +63,10 @@ docker compose up
 
 2) Ir hacia prueba3/JS/Apps donde esta cada interfaz de cada base de datos. En la appMaster.js estan todas las operaciones disponibles y en las demas solo las de tipo "SELECT".
 
+##
+
 Prueba3:
+
 1) Ir a mysql-replication/ hacer y esperar hasta que se termine de configurar:
 
 ```bash
@@ -70,8 +87,10 @@ docker exec -it proxysql \
 mysql -uadmin -padmin -h127.0.0.1 -P6032 \
 -e "SELECT hostgroup, srv_host, srv_port, status, Queries FROM stats_mysql_connection_pool;"
 ```
+##
 
 Prueba4:
+
 1) Ir a config/ y ejecutar:
 
 ```bash
