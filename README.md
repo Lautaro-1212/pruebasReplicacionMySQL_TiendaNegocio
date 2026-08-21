@@ -24,46 +24,63 @@
 ## Como probar cada prueba: 
 
 Prueba1: 
-1) Primero levantar la imagen de docker con el servidor MySQL: 
+1)Ir a la carpeta de la prueba1:
 
 ```bash
-docker run -d --name db1 -e MYSQL_ROOT_PASSWORD=Lauta -e MYSQL_DATABASE=Hola -p 3306:3306 mysql:8.0.
+cd prueba1
 ```
 
-2) Dentro del proyecto instalar ‘mysql2’:
+2) Primero levantar la imagen de docker con el servidor MySQL: 
+
+```bash
+docker run -d --name db1 -e MYSQL_ROOT_PASSWORD=Lauta -e MYSQL_DATABASE=Hola -p 3306:3306 mysql:8.0
+```
+
+3) Dentro del proyecto instalar ‘mysql2’:
 
 ```bash
 npm i mysql2
 ```
 
-3) En app.js correr primero la funcion createTableProductos().
+4) En app.js correr primero la funcion createTableProductos().
 
-4) Despues hacer un probra las demas funciones.
+5) Despues hacer un probra las demas funciones.
 
-Prueba2: 
-1) En una terminal ir prueba3/mysql-replicacion y hacer: 
+Prueba2:
+1)Ir a la carpeta de la prueba2:
+
+```bash
+cd prueba2
+```
+
+2) En una terminal ir prueba3/mysql-replicacion y hacer: 
 
 ```bash
 docker compose up
 ```
 
-2) Ir hacia prueba3/JS/Apps donde esta cada interfaz de cada base de datos. En la appMaster.js estan todas las operaciones disponibles y en las demas solo las de tipo "SELECT".
+3) Ir hacia prueba3/JS/Apps donde esta cada interfaz de cada base de datos. En la appMaster.js estan todas las operaciones disponibles y en las demas solo las de tipo "SELECT".
 
 Prueba3:
-1) Ir a mysql-replication/ hacer y esperar hasta que se termine de configurar:
+1)Ir a la carpeta de prueba3:
+
+```bash
+cd prueba3
+```
+
+2) Ir a mysql-replication/ hacer y esperar hasta que se termine de configurar:
 
 ```bash
 docker compose up
 ```
 
-
-2) Ir a JS/Apps y en otra terminal ejecutar para comunicarte con el Wrapper:
+3) Ir a JS/Apps y en otra terminal ejecutar para comunicarte con el Wrapper:
 
 ```bash 
 node wrapperApp.js
 ```
 
-Extra: Si queres ver como estan los grupos del Wrapper podes usar este comando:
+Extra: Si queres ver como estan los grupos del Wrapper podes usar este comando en otra terminal:
 
 ```bash
 docker exec -it proxysql \
@@ -72,7 +89,13 @@ mysql -uadmin -padmin -h127.0.0.1 -P6032 \
 ```
 
 Prueba4:
-1) Ir a config/ y ejecutar:
+1)Ir a la carpeta de prueba4:
+
+```bash
+cd prueba4
+```
+
+2) Ir a config/ y ejecutar:
 
 ```bash
 docker compose up
@@ -80,7 +103,7 @@ docker compose up
 
 2) Y usar el wrapper de la misma manera que en la prueba 3.
 
-Extra: Para poder ver en tiempo real el monitor del failover y el rejoin usa el siguiente comando:
+Extra: Para poder ver en tiempo real el monitor del failover y el rejoin usa el siguiente comando en otra terminal:
 
 ```bash
 Docker compose logs -f monitor
