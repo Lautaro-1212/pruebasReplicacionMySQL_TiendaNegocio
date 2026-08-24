@@ -132,6 +132,6 @@ Prueba5:
 Probar concurrencia con autocannon:
 
 ```bash
-npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 500 -d 20 http://localhost:3000/insert
+npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 10 -a 4000 http://localhost:3000/insert
 ```
   
