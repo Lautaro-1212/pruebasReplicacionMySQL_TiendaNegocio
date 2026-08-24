@@ -1,4 +1,4 @@
-import { pool } from '../DBs/wrapper.js'
+import { pool } from '../dbs/wrapper.js'
 
 const insertProducts = async (producto) => {
   try{
@@ -48,4 +48,3 @@ const emptyTable = async () => {
   }
 }
 
-getProducts()

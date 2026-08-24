@@ -23,6 +23,12 @@
 
 ## Como probar cada prueba: 
 
+ACLARACIONES:
+Para ejecutar aplicaciones de node es: 
+```bash
+node nombreDelArchivo.js
+```
+
 Prueba1:
 
 1) Ir hacia la carpeta de la prueba1:
@@ -45,23 +51,25 @@ npm i mysql2
 
 4) Ejecutar app.js con: 
 
-```bash
-node app.js
-```
-
 5) Probar los diferentes funciones de app.js reemplazar al final del todo la funcion por otra.
 
 ##
 
 Prueba2: 
-
-1) En una terminal ir prueba3/mysql-replicacion y hacer: 
+1) Ir hacia la carpeta de la prueba2
 
 ```bash
+cd prueba2
+```
+
+2) En una terminal ir mysql-replicacion/ y hacer: 
+
+```bash
+cd mysql-replicacion
 docker compose up
 ```
 
-2) Ir hacia prueba3/JS/Apps donde esta cada interfaz de cada base de datos. En la appMaster.js estan todas las operaciones disponibles y en las demas solo las de tipo "SELECT".
+3) Ir hacia js/apps donde esta cada interfaz de cada base de datos. En la appMaster.js estan todas las operaciones disponibles y en las demas solo las de tipo. Se puede probar con: 
 
 ##
 
@@ -70,14 +78,22 @@ Prueba3:
 1) Ir a mysql-replication/ hacer y esperar hasta que se termine de configurar:
 
 ```bash
+cd mysql-replication
 docker compose up
 ```
 
-
-2) Ir a JS/Apps y en otra terminal ejecutar para comunicarte con el Wrapper:
+2) Ir a js/apps y en otra terminal ejecutar wrapperApp.js para comunicarte con el Wrapper:
 
 ```bash 
-node wrapperApp.js
+cd js/apps
+```
+
+Se puede reemplazar las funciones al final de wrapperApp.js para hacer distintas operaciones.
+
+Para insertar un producto al final tenes que hacer:
+
+```js
+insertProducs("Producto")
 ```
 
 Extra: Si queres ver como estan los grupos del Wrapper podes usar este comando:
@@ -102,7 +118,7 @@ docker compose up
 Extra: Para poder ver en tiempo real el monitor del failover y el rejoin usa el siguiente comando:
 
 ```bash
-Docker compose logs -f monitor
+docker compose logs -f monitor
 ```
 
  

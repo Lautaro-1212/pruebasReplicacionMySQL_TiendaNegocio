@@ -48,4 +48,10 @@ const emptyTable = async () => {
   }
 }
 
+createTableProductos()
+
+insertProducts()
+
 getProducts()
+
+emptyTable()

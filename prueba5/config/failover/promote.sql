@@ -1,0 +1,5 @@
+STOP REPLICA;
+RESET REPLICA ALL;
+
+SET GLOBAL read_only = OFF;
+SET GLOBAL super_read_only = OFF;

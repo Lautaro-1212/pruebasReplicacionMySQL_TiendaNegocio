@@ -1,4 +1,9 @@
 import { pool } from '../dbs/wrapper.js'
+import express from 'express';
+
+const app = express();
+const port = 3000;
+let contador = 0
 
 const insertProducts = async (producto) => {
   try{
@@ -31,7 +36,7 @@ const createTableProductos = async () => {
 
 const getProducts = async () => {
   try{
-    const [result] = await pool.query(`SELECT nombre FROM productos`)
+  const [result] = await pool.query(`SELECT nombre FROM productos`);
     console.table(result);
   } catch(error){
     console.error(error)
@@ -48,4 +53,30 @@ const emptyTable = async () => {
   }
 }
 
-getProducts()
+app.use(express.json());
+
+app.post('/insert', async (req, res) => {
+;
+  const producto = req.body.producto;
+  contador++;
+  await insertProducts(producto);
+  console.log('contador:', contador);
+  res.send(`Producto insertado correctamente ${producto}, contador: ${contador}`);
+});
+
+app.get('/products', async (req, res) => {
+  const products = await getProducts();
+  res.send(`Productos obtenidos correctamente, contador: ${contador}`);
+});
+
+app.delete('/empty', async (req, res) => {
+  await emptyTable();
+  contador = 0;
+  res.send('Tabla vaciada correctamente');
+});
+
+
+
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
+});

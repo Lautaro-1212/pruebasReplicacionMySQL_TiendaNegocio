@@ -1,10 +1,11 @@
-import { pool } from '../DBs/db1.js'
+import { pool } from '../dbs/db1.js'
 
 const insertProducts = async () => {
   try{
     const result = await pool.query("INSERT INTO productos(codigo, nombre, precio, stock) " + "VALUES (?, ?, ?, ?)", ["1231", "Pancho", 1231, 1211]);
     console.table(result)
     console.log("Los productos se insertaron correctamente")
+    getProducts()
   } catch(error){
     console.error(error)
   }
@@ -48,7 +49,8 @@ const emptyTable = async () => {
   }
 }
 
-// createTableProductos()
-// insertProducts()
-// getProducts()
-emptyTable()
+//createTableProductos()
+
+insertProducts()
+
+//emptyTable()
