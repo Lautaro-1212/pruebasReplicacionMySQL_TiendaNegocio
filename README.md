@@ -4,7 +4,9 @@
 
 - Node v22.21.0
 
-- NPM 10.9.4
+- npm 10.9.4
+
+- npx 10.9.4
 
 ## ¿ Cual es el fin de esta investigacion ?
 
@@ -20,6 +22,8 @@
 - Prueba3: Crear 3 servidores MySQL con un docker compose, con la configuración de Master Slave, y que de intermediario entre la API y el máster haya un Wrapper hecho con ProxySQL.
 
 - Prueba4: Replicar lo anteriormente hecho en la prueba 3, pero agregarle un sistema de failover y de rejoin.
+
+- Prueba 5: Aplicar lo mismo que lo anterior, pero los métodos de wrapperApp.js hacerlos endpoint con express, y probar la concurrencia con autocannon.
 
 ## Como probar cada prueba: 
 
