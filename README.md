@@ -121,6 +121,13 @@ Extra: Para poder ver en tiempo real el monitor del failover y el rejoin usa el 
 docker compose logs -f monitor
 ```
 
- 
+## 
 
+Prueba5: 
+
+Probar concurrencia con autocannon:
+
+```bash
+npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 500 -d 20 http://localhost:3000/insert
+```
   
