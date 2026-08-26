@@ -29,7 +29,7 @@
 
 ## Como probar cada prueba: 
 
-ACLARACIONES:
+<span style="font-size: 25px">**ACLARACIONES:**</span>
 Para ejecutar aplicaciones de node es: 
 ```bash
 node nombreDelArchivo.js
