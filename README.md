@@ -25,6 +25,8 @@
 
 - Prueba 5: Aplicar lo mismo que lo anterior, pero los métodos de wrapperApp.js hacerlos endpoint con express, y probar la concurrencia con autocannon.
 
+- Prueba 6: Agregar un sistema para que cuando no se pueda hacer un insert lo ponga en una cola y después de unos segundos haga un reintento.
+
 ## Como probar cada prueba: 
 
 ACLARACIONES:
@@ -33,7 +35,11 @@ Para ejecutar aplicaciones de node es:
 node nombreDelArchivo.js
 ```
 
-Prueba1:
+Para ejecutar cualquier comando que este relacionado con Docker, te tenes que para pruebaX/config/
+
+##
+
+<span style="font-size: 25px">**Prueba1:**</span>
 
 1) Ir hacia la carpeta de la prueba1:
 
@@ -59,7 +65,8 @@ npm i mysql2
 
 ##
 
-Prueba2: 
+<span style="font-size: 25px">**Prueba2:**</span>
+
 1) Ir hacia la carpeta de la prueba2
 
 ```bash
@@ -77,7 +84,7 @@ docker compose up
 
 ##
 
-Prueba3:
+<span style="font-size: 25px">**Prueba3:**</span>
 
 1) Ir a mysql-replication/ hacer y esperar hasta que se termine de configurar:
 
@@ -109,7 +116,7 @@ mysql -uadmin -padmin -h127.0.0.1 -P6032 \
 ```
 ##
 
-Prueba4:
+<span style="font-size: 25px">**Prueba4:**</span>
 
 1) Ir a config/ y ejecutar:
 
@@ -127,11 +134,63 @@ docker compose logs -f monitor
 
 ## 
 
-Prueba5: 
+<span style="font-size: 25px">**Prueba5:**</span>
 
 Probar concurrencia con autocannon:
 
 ```bash
-npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 10 -a 4000 http://localhost:3000/insert
+npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 10 -a 8000 http://localhost:3010/insert
 ```
-  
+
+##
+
+<span style="font-size: 25px">**Prueba6:**</span>
+
+Iniciar worker:
+```bash
+cd js/worker
+node insertWorker.js
+```
+
+En otra terminal tirar muchos request en simultaneo:
+
+```bash
+npx autocannon \
+-m POST \
+-H "Content-Type: application/json" \
+-b '{"producto":"pancho"}' \
+-c 500 \
+-d 20 \
+-j \
+http://localhost:3010/insert > resultado.json
+```
+
+En otra terminal parar el master para que se promueva a otro mientras se estan haciendo insert:
+
+```bash
+docker stop mysql-master
+```
+
+Espera unos segundos hasta que el worker deje de actualizar. Una vez termine, tira una request mas usando curl o Postman, para que se actualize devuelta el worker:
+
+```bash
+curl -X POST http://localhost:3010/insert \
+  -H "Content-Type: application/json" \
+  -d '{"producto":"prueba-worker"}'
+```
+
+En otra terminal podes mirar cuantos request llegaron exitosamente segun Autocannon con este comando:
+
+```bash
+jq '.requests.sent' resultado.json
+```
+
+Tambien podes ver cuantos registros quedaron en la tabla haciendo:
+
+```bash
+docker exec -it proxysql \
+mysql -uapp -papp123 -h127.0.0.1 -P6033 \
+-e "USE tienda; SELECT COUNT(*) AS total FROM productos;"
+```
+
+Con todo esto comproba que todas los inserts llegaron exitosamente.
