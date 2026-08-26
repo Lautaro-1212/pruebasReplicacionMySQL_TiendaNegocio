@@ -1,8 +1,9 @@
 import { pool } from '../dbs/wrapper.js'
 import express from 'express';
+import redis from '../redis/redis.js';
 
 const app = express();
-const port = 3000;
+const port = 3010;
 let contador = 0
 
 const insertProducts = async (producto) => {
@@ -56,11 +57,23 @@ const emptyTable = async () => {
 app.use(express.json());
 
 app.post('/insert', async (req, res) => {
-  const producto = req.body.producto;
-  contador++;
-  await insertProducts(producto);
-  console.log('contador:', contador);
-  res.send(`Producto insertado correctamente ${producto}, contador: ${contador}`);
+
+    const producto = req.body.producto;
+
+    contador++;
+
+    await redis.rPush(
+        'insert_queue',
+        JSON.stringify({
+            producto
+        })
+    );
+
+    console.log('Producto agregado a la cola:', producto);
+
+    res.send(
+        `Producto agregado a la cola: ${producto}, contador: ${contador}`
+    );
 });
 
 app.get('/products', async (req, res) => {

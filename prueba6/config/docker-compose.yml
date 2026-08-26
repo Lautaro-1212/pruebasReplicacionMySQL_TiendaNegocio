@@ -114,6 +114,7 @@ services:
     networks:
       - mysql-net
 
+
   monitor:
     build:
       context: ./failover
@@ -130,8 +131,21 @@ services:
 
     working_dir: /failover
 
-    networks: 
+    networks:
       - mysql-net
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+
+    ports:
+      - "6379:6379"
+
+    networks:
+      - mysql-net
+
 
 networks:
 
@@ -139,5 +153,4 @@ networks:
 
 
 volumes:
-
   proxysql-data:
