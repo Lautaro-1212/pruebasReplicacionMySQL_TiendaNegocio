@@ -219,7 +219,7 @@ cd js/worker
 node insertWorker.js
 ```
 
-En otra terminal tirar muchos request en simultaneo:
+En otra terminal tirar muchos request en simultaneo con autocannon y generar un estadistica:
 
 ```bash
 npx autocannon \
