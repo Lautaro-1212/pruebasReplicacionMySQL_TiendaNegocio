@@ -12,7 +12,6 @@
 
 - Hacer un sistema de Replication con MySQL, utilizando la configuración de Master Slave con tres nodos. Donde el intermediario es un Wrapper hecho con SQL Router o ProxySQL. Ademas integrando un sistema de Failover y de rejoin.
 
-
 ## ¿ Que objetivo tiene cada prueba ?
 
 - Prueba1: Conectar una base de datos a node.js y usando los metodos de app.js poder hacer las funciones de un CRUD.
@@ -32,12 +31,7 @@
 
 <span style="font-size: 20px">**ACLARACIONES:**</span>
 
-1) Para ejecutar aplicaciones de node es: 
-```bash
-node nombreDelArchivo.js
-```
-
-2) Para ejecutar cualquier comando que este relacionado con Docker, te tenes que para pruebaX/config/
+1) Para ejecutar cualquier comando que este relacionado con Docker, te tenes que para pruebaX/config/
 
 ##
 
@@ -262,20 +256,20 @@ Levantar los servicios y esperar unos segundos hasta que ver el monitor:
 docker compose up
 ```
 
-Levantar el servidor de Express:
+En otra terminal levantar el servidor de Express:
 
 ```bash 
 cd js/apps
 node wrapperApp.js
 ```
 
-Hacer un get de los productos:
+En otra terminal parado en "js/apps" hacer un GET de los productos:
 
 ```bash
-curl http://localhost:3010/product
+curl http://localhost:3010/products
 ```
 
-Hacer un Insert: 
+Hacer un INSERT: 
 
 ```bash
 curl -X POST http://localhost:3010/insert \
@@ -283,16 +277,16 @@ curl -X POST http://localhost:3010/insert \
   -d '{"producto":"prueba3-ejemplo"}'
 ```
 
-Hacer un delete:
+Hacer un DELETE:
 
 ```bash
 curl -X DELETE http://localhost:3010/empty
 ```
 
-Probar concurrencia con autocannon:
+Probar concurrencia con Autocannon:
 
 ```bash
-npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 10 -a 8000 http://localhost:3010/insert
+npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"pancho"}' -c 10 -a 2000 http://localhost:3010/insert
 ```
 
 ##
@@ -317,23 +311,24 @@ Levantar el compose con todos los servicios y esperar unos segundos hasta que ve
 docker compose up
 ```
 
-Iniciar el servidor de Express y el Redis:
+En otra terminal iniciar el servidor de Express y el Redis:
 
 ```bash
 cd js/apps
 node wrapperApp.js
 ```
 
-Iniciar worker:
+En otra terminal iniciar Worker:
 
 ```bash
-cd js/worker
+cd js/workers
 node insertWorker.js
 ```
 
-En otra terminal tirar muchos request en simultaneo con autocannon y generar un estadistica:
+En otra terminal con Autocannon generar muchos request y generar estadisticas:
 
 ```bash
+cd js/apps
 npx autocannon \
 -m POST \
 -H "Content-Type: application/json" \
@@ -344,13 +339,13 @@ npx autocannon \
 http://localhost:3010/insert > resultado.json
 ```
 
-En otra terminal parar el master para que se promueva a otro mientras se estan haciendo insert:
+En otra terminal parar el master para que se promueva a otro mientras se estan haciendo insert del Autocannon:
 
 ```bash
 docker stop mysql-master
 ```
 
-Espera unos segundos hasta que el worker deje de actualizar. Una vez termine, tira una request mas usando curl o Postman, para que se actualize devuelta el worker:
+Espera unos segundos hasta que el Worker deje de actualizar. Una vez termine, tira una request mas usando curl o Postman, para que se actualize devuelta el Worker:
 
 ```bash
 curl -X POST http://localhost:3010/insert \

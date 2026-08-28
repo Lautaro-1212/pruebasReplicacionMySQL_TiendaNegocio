@@ -58,21 +58,19 @@ app.use(express.json());
 
 app.post('/insert', async (req, res) => {
 
-    const producto = req.body.producto;
+    const producto = req.body;
 
     contador++;
 
     await redis.rPush(
         'insert_queue',
-        JSON.stringify({
-            producto
-        })
+        JSON.stringify(producto)
     );
 
-    console.log('Producto agregado a la cola:', producto);
+    console.log('Producto agregado a la cola:', producto.producto);
 
     res.send(
-        `Producto agregado a la cola: ${producto}, contador: ${contador}`
+        `Producto agregado a la cola: ${producto.producto}, contador: ${contador}`
     );
 });
 

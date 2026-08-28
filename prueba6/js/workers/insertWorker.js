@@ -6,6 +6,7 @@ let fallidos = 0;
 let reintentos = 0;
 let procesando = 0;
 let recibidos = 0;
+//let errorForzado = false;
 
 console.log('Worker iniciado');
 
@@ -61,6 +62,14 @@ while (true) {
         procesando++;
 
         try {
+
+            if (producto.producto === 'FORZAR_ERROR' && producto.errorForzado) {
+
+                producto.errorForzado = false;
+
+                throw new Error('Error de prueba');
+
+            }
 
             await pool.query(
                 'INSERT INTO productos(nombre) VALUES (?)',
