@@ -120,19 +120,79 @@ mysql -uadmin -padmin -h127.0.0.1 -P6032 \
 
 <span style="font-size: 25px">**Prueba4:**</span>
 
-1) Ir a config/ y ejecutar:
+Ir a la prueba:
+
+```bash
+cd prueba4
+```
+
+Descargar las dependencias:
+
+```bash 
+npm i
+```
+
+Iniciar los servicios y esperar unos segundos hasta que ver el monitor:
 
 ```bash
 docker compose up
 ```
 
-2) Y usar el wrapper de la misma manera que en la prueba 3.
-
-Extra: Para poder ver en tiempo real el monitor del failover y el rejoin usa el siguiente comando:
+En una terminal ver los logs en tiempo real del monitor: 
 
 ```bash
 docker compose logs -f monitor
 ```
+
+En otra terminal tirar el master para ver como se activa el Failover:
+
+```bash
+docker stop mysql-master
+```
+
+Deberia aparecer algo asi dentro del monotir:
+
+```bash
+monitor-1  | [14:06:30] Master NO disponible.
+monitor-1  | [14:06:30] Ejecutando failover...
+monitor-1  | ======================================
+monitor-1  |        MySQL Failover Manager
+monitor-1  | ======================================
+monitor-1  | [1/5] Comprobando master...
+monitor-1  | Master NO disponible.
+monitor-1  | Iniciando failover...
+monitor-1  | [2/5] Buscando candidato...
+monitor-1  | Slave1 disponible. Será promocionado.
+monitor-1  | [3/5] Promocionando mysql-slave1...
+monitor-1  | mysql: [Warning] Using a password on the command line interface can be insecure.
+monitor-1  | Promoción completada.
+monitor-1  | [4/5] Configurando replicación...
+monitor-1  | Configurando usuario de replicación en mysql-slave1...
+monitor-1  | mysql: [Warning] Using a password on the command line interface can be insecure.
+monitor-1  | Usuario replica configurado.
+monitor-1  | Configurando slave2 para replicar desde slave1...
+monitor-1  | mysql: [Warning] Using a password on the command line interface can be insecure.
+monitor-1  | Slave2 ahora replica desde slave1.
+monitor-1  | [5/5] Actualizando ProxySQL...
+monitor-1  | ProxySQL actualizado.
+monitor-1  | [6/6] Reincorporando antiguo master...
+monitor-1  | Antiguo master todavía no está disponible.
+monitor-1  | Se reincorporará cuando vuelva a estar disponible.
+monitor-1  | ======================================
+monitor-1  |        FAILOVER COMPLETADO
+monitor-1  | ======================================
+monitor-1  | Nuevo master: slave1
+monitor-1  | ======================================
+monitor-1  | [14:06:31] Failover finalizado.
+```
+
+Ir a config/ y ejecutar:
+
+```bash
+docker compose up
+```
+
+Y usar el wrapper de la misma manera que en la prueba 3.
 
 ## 
 
@@ -150,7 +210,7 @@ Descargar las dependencias:
 npm i
 ```
 
-Levantar los servicios docker: 
+Levantar los servicios y esperar unos segundos hasta que ver el monitor: 
 
 ```bash 
 docker compose up
