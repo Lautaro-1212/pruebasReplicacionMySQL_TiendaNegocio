@@ -26,16 +26,18 @@
 - Prueba 5: Aplicar lo mismo que lo anterior, pero los métodos de wrapperApp.js hacerlos endpoint con express, y probar la concurrencia con autocannon.
 
 - Prueba 6: Agregar un sistema para que cuando no se pueda hacer un insert lo ponga en una cola y después de unos segundos haga un reintento.
+## 
 
-## Como probar cada prueba: 
+<span style="font-size: 30px">**Como probar cada prueba:**</span>
 
-<span style="font-size: 25px">**ACLARACIONES:**</span>
-Para ejecutar aplicaciones de node es: 
+<span style="font-size: 20px">**ACLARACIONES:**</span>
+
+1) Para ejecutar aplicaciones de node es: 
 ```bash
 node nombreDelArchivo.js
 ```
 
-Para ejecutar cualquier comando que este relacionado con Docker, te tenes que para pruebaX/config/
+2) Para ejecutar cualquier comando que este relacionado con Docker, te tenes que para pruebaX/config/
 
 ##
 
