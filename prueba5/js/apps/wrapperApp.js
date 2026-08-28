@@ -2,13 +2,13 @@ import { pool } from '../dbs/wrapper.js'
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = 3010;
 let contador = 0
 
 const insertProducts = async (producto) => {
   try{
     const result = await pool.query("INSERT INTO productos(nombre) " + "VALUES (?)", [producto]);
-    console.table(result)
+    //console.table(result)
     console.log("Los productos se insertaron correctamente")
   } catch(error){
     console.error(error)

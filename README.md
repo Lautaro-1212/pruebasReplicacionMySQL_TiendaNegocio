@@ -138,6 +138,51 @@ docker compose logs -f monitor
 
 <span style="font-size: 25px">**Prueba5:**</span>
 
+Ir a la prueba: 
+
+```bash 
+cd prueba5
+```
+
+Descargar las dependencias: 
+
+```bash 
+npm i
+```
+
+Levantar los servicios docker: 
+
+```bash 
+docker compose up
+```
+
+Levantar el servidor de Express:
+
+```bash 
+cd js/apps
+node wrapperApp.js
+```
+
+Hacer un get de los productos:
+
+```bash
+curl http://localhost:3010/product
+```
+
+Hacer un Insert: 
+
+```bash
+curl -X POST http://localhost:3010/insert \
+  -H "Content-Type: application/json" \
+  -d '{"producto":"prueba3-ejemplo"}'
+```
+
+Hacer un delete:
+
+```bash
+curl -X DELETE http://localhost:3010/empty
+```
+
 Probar concurrencia con autocannon:
 
 ```bash
@@ -148,13 +193,19 @@ npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"panc
 
 <span style="font-size: 25px">**Prueba6:**</span>
 
+Descargar las dependencias: 
+
+```bash 
+npm i
+```
+
 Levantar el compose con todos los servicios y esperar unos segundos hasta que ver el monitor:
 
 ```bash
 docker compose up
 ```
 
-Iniciar el servidor de express y la cola del redis:
+Iniciar el servidor de Express y el Redis:
 
 ```bash
 cd js/apps
