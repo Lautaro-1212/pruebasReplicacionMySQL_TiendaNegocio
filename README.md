@@ -186,13 +186,17 @@ monitor-1  | ======================================
 monitor-1  | [14:06:31] Failover finalizado.
 ```
 
-Ir a config/ y ejecutar:
+Levantar de nuevo el master para ver como se activa el sistema de Rejoin:
 
-```bash
-docker compose up
+```bash 
+docker start mysql-master
 ```
 
-Y usar el wrapper de la misma manera que en la prueba 3.
+En el monitor tendria que aparecer esto:
+
+```bash
+monitor-1  | [14:07:11] Se reincorporó un nodo.
+```
 
 ## 
 
