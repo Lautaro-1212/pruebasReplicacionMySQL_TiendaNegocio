@@ -146,7 +146,21 @@ npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"panc
 
 <span style="font-size: 25px">**Prueba6:**</span>
 
+Levantar el compose con todos los servicios y esperar unos segundos hasta que ver el monitor:
+
+```bash
+docker compose up
+```
+
+Iniciar el servidor de express y la cola del redis:
+
+```bash
+cd js/apps
+node wrapperApp.js
+```
+
 Iniciar worker:
+
 ```bash
 cd js/worker
 node insertWorker.js
