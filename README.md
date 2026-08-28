@@ -88,34 +88,76 @@ docker compose up
 
 <span style="font-size: 25px">**Prueba3:**</span>
 
-1) Ir a mysql-replication/ hacer y esperar hasta que se termine de configurar:
+Ir a la prueba:
 
 ```bash
-cd mysql-replication
+cd prueba3
+```
+
+Instalar las dependecias:
+
+```bash
+npm i
+```
+
+Iniciar los servicios:
+
+```bash
 docker compose up
 ```
 
-2) Ir a js/apps y en otra terminal ejecutar wrapperApp.js para comunicarte con el Wrapper:
+Esperar hasta ver esta leyendo:
 
-```bash 
-cd js/apps
+```bash
+setup-1 | + echo 'Replicacion lista'
 ```
 
-Se puede reemplazar las funciones al final de wrapperApp.js para hacer distintas operaciones.
-
-Para insertar un producto al final tenes que hacer:
-
-```js
-insertProducs("Producto")
-```
-
-Extra: Si queres ver como estan los grupos del Wrapper podes usar este comando:
+Ver si los grupos se armaron correctamente en proxysql:
 
 ```bash
 docker exec -it proxysql \
 mysql -uadmin -padmin -h127.0.0.1 -P6032 \
 -e "SELECT hostgroup, srv_host, srv_port, status, Queries FROM stats_mysql_connection_pool;"
 ```
+
+Para probar si las reglas del proxysql se cumplen, hay que ejecutar wrapperApp.js:
+
+Para poder probar hacer un get para comprobar que llegan a los slaves(hostgroup20), podes ejecutar wrapperApp.js como viene por defecto:
+
+```bash
+node wrapperApp.js
+```
+
+Luego podes comprobar si llego la consulta con ejecutando el comando para ver los grupos, se deberia de ver algo asi la salida:
+
+```bash
++-----------+----------+----------+--------+---------+
+| hostgroup | srv_host | srv_port | status | Queries |
++-----------+----------+----------+--------+---------+
+| 10        | master   | 3306     | ONLINE | 0       |
+| 20        | slave1   | 3306     | ONLINE | 1       |
+| 20        | slave2   | 3306     | ONLINE | 0       |
++-----------+----------+----------+--------+---------+
+```
+
+Para poder probar un INSERT tenes que reemplazar el metodo de wrapperApp.js y ejecutar denuevo: 
+
+```js
+getProducts() -> insertProducts("Producto de prueba")
+```
+
+Y de nuevo ver los grupos, tendrias que ver algo asi:
+
+```bash
++-----------+----------+----------+--------+---------+
+| hostgroup | srv_host | srv_port | status | Queries |
++-----------+----------+----------+--------+---------+
+| 10        | master   | 3306     | ONLINE | 1       |
+| 20        | slave1   | 3306     | ONLINE | 1       |
+| 20        | slave2   | 3306     | ONLINE | 0       |
++-----------+----------+----------+--------+---------+
+```
+
 ##
 
 <span style="font-size: 25px">**Prueba4:**</span>
@@ -126,7 +168,7 @@ Ir a la prueba:
 cd prueba4
 ```
 
-Descargar las dependencias:
+Instalar las dependencias:
 
 ```bash 
 npm i
@@ -208,7 +250,7 @@ Ir a la prueba:
 cd prueba5
 ```
 
-Descargar las dependencias: 
+Instalar las dependencias: 
 
 ```bash 
 npm i
@@ -257,7 +299,13 @@ npx autocannon -m POST -H "Content-Type: application/json" -b '{"producto":"panc
 
 <span style="font-size: 25px">**Prueba6:**</span>
 
-Descargar las dependencias: 
+Ir a la prueba
+
+```bash
+cd prueba6
+```
+
+Instalar las dependencias: 
 
 ```bash 
 npm i
