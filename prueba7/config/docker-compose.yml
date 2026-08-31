@@ -1,0 +1,156 @@
+services:
+
+  master:
+    image: mysql:8.0
+    container_name: mysql-master
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: Lauta
+
+    ports:
+      - "3317:3306"
+
+    volumes:
+      - ./master/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./master/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    networks:
+      - mysql-net
+
+
+  slave1:
+    image: mysql:8.0
+    container_name: mysql-slave1
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: Lauta
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - ./slave1/my.cnf:/etc/mysql/conf.d/my.cnf
+
+    depends_on:
+      - master
+
+    networks:
+      - mysql-net
+
+
+  slave2:
+    image: mysql:8.0
+    container_name: mysql-slave2
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: Lauta
+
+    ports:
+      - "3308:3306"
+
+    volumes:
+      - ./slave2/my.cnf:/etc/mysql/conf.d/my.cnf
+
+    depends_on:
+      - master
+
+    networks:
+      - mysql-net
+
+
+  setup:
+    image: mysql:8.0
+
+    depends_on:
+      - master
+      - slave1
+      - slave2
+
+    volumes:
+      - ./setup/setup-replication.sh:/setup.sh:ro
+
+    entrypoint:
+      - bash
+      - /setup.sh
+
+    networks:
+      - mysql-net
+
+
+  proxysql:
+    image: proxysql/proxysql:2.7.3
+    container_name: proxysql
+    restart: always
+
+    ports:
+      - "6034:6032"
+      - "6033:6033"
+
+    volumes:
+      - ./proxysql/proxysql.cnf:/etc/proxysql.cnf
+      - proxysql-data:/var/lib/proxysql
+
+    networks:
+      - mysql-net
+
+
+  setup-proxysql:
+    image: mysql:8.0
+
+    depends_on:
+      - proxysql
+
+    volumes:
+      - ./proxysql/init-proxysql.sh:/setup.sh:ro
+      - ./proxysql/init-proxysql.sql:/setup/init-proxysql.sql:ro
+
+    entrypoint:
+      - bash
+      - /setup.sh
+
+    networks:
+      - mysql-net
+
+
+  monitor:
+    build:
+      context: ./failover
+
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+      setup-proxysql:
+        condition: service_completed_successfully
+
+    volumes:
+      - ./failover:/failover
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    working_dir: /failover
+
+    networks:
+      - mysql-net
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+
+    ports:
+      - "6379:6379"
+
+    networks:
+      - mysql-net
+
+
+networks:
+
+  mysql-net:
+
+
+volumes:
+  proxysql-data:
